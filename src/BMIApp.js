@@ -58,9 +58,11 @@ function BMIApp() {
       setAlertText("Over weight");
     }
   }
-
   return (
-    <div className="container mt-5 text-center">
+    <div
+      className="container mt-5 text-center"
+      style={{ fontVariant: "small-caps" }}
+    >
       <div className="card p-4" style={{ maxWidth: "400px" }}>
         <h2 className="card-title mb-4">BMI Calculator</h2>
         <InputTextField
@@ -84,7 +86,10 @@ function BMIApp() {
         {BMIValue && (
           <>
             <h5 className="mt-4">Your BMI is: {BMIValue}</h5>
-            <div className={`alert alert-${alertColor} font-monospace p-2`}>
+            <div
+              className={`alert alert-${alertColor} font-monospace p-2`}
+              style={{ fontVariant: "normal" }}
+            >
               {alertText}
             </div>
           </>
