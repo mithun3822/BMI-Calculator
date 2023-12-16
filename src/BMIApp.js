@@ -34,6 +34,10 @@ function BMIApp() {
     window.localStorage.setItem("height", height);
     window.localStorage.setItem("weight", weight);
   }, [height, weight]);
+  React.useEffect(() => {
+    updateDarkModeStyles(darkMode);
+    return () => {};
+  }, [darkMode]);
 
   function fnClear() {
     setHeight("");
