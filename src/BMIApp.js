@@ -1,8 +1,8 @@
-import React from "react";
-import { useState } from "react";
+import * as React from "react";
+import "./BMIApp.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-function InputTextField({ value, onChange, children }) {
+function InputTextField({ value = "", onChange, children }) {
   return (
     <div className="form-group">
       <label className="mb-1">{children}</label>
@@ -19,11 +19,21 @@ function InputTextField({ value, onChange, children }) {
 }
 
 function BMIApp() {
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [BMIValue, setBMIValue] = useState("");
-  const [alertColor, setAlertColor] = useState("primary");
-  const [alertText, setAlertText] = useState("Normal");
+  const [height, setHeight] = React.useState(
+    window.localStorage.getItem("height") || ""
+  );
+  const [weight, setWeight] = React.useState(
+    window.localStorage.getItem("weight") || ""
+  );
+  const [BMIValue, setBMIValue] = React.useState("");
+  const [alertColor, setAlertColor] = React.useState("primary");
+  const [alertText, setAlertText] = React.useState("Normal");
+  const [darkMode, setdarkMode] = React.useState(false);
+
+  React.useEffect(() => {
+    window.localStorage.setItem("height", height);
+    window.localStorage.setItem("weight", weight);
+  }, [height, weight]);
 
   function fnClear() {
     setHeight("");
@@ -58,44 +68,70 @@ function BMIApp() {
       setAlertText("Over weight");
     }
   }
+  function fnToggleMode() {
+    const newDarkMode = !darkMode;
+    setdarkMode(newDarkMode);
+    updateDarkModeStyles(newDarkMode);
+  }
+
+  function updateDarkModeStyles(isDarkMode) {
+    const body = document.body;
+    const card = document.getElementById("divCard");
+
+    if (isDarkMode) {
+      body.classList.add("bg-secondary");
+      card.classList.add("bg-dark", "text-light");
+    } else {
+      body.classList.remove("bg-secondary");
+      card.classList.remove("bg-dark", "text-light");
+    }
+  }
+
   return (
-    <div
-      className="container mt-5 text-center"
-      style={{ fontVariant: "small-caps" }}
-    >
-      <div className="card p-4" style={{ maxWidth: "400px" }}>
-        <h2 className="card-title mb-4">BMI Calculator</h2>
-        <InputTextField
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-          children="Height (cm)"
-        />
-        <InputTextField
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          children="Weight (kg)"
-        />
-        <div className="mt-4">
-          <button className="btn btn-primary me-2" onClick={fnCheckBMI}>
-            Check BMI
-          </button>
-          <button className="btn btn-danger" onClick={fnClear}>
-            Clear
-          </button>
-        </div>
-        {BMIValue && (
-          <>
-            <h5 className="mt-4">Your BMI is: {BMIValue}</h5>
-            <div
-              className={`alert alert-${alertColor} font-monospace p-2`}
-              style={{ fontVariant: "normal" }}
-            >
-              {alertText}
-            </div>
-          </>
-        )}
+    <>
+      <div>
+        <button className="btn btn-lg" onClick={fnToggleMode}>
+          {darkMode ? "🌞" : "🌙"}
+        </button>
       </div>
-    </div>
+      <div
+        className="container mt-5 text-center"
+        style={{ fontVariant: "small-caps" }}
+      >
+        <div id="divCard" className="card p-4" style={{ maxWidth: "400px" }}>
+          <h2 className="card-title mb-4">BMI Calculator</h2>
+          <InputTextField
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            children="Height (cm)"
+          />
+          <InputTextField
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            children="Weight (kg)"
+          />
+          <div className="mt-4">
+            <button className="btn btn-primary me-2" onClick={fnCheckBMI}>
+              Check BMI
+            </button>
+            <button className="btn btn-danger" onClick={fnClear}>
+              Clear
+            </button>
+          </div>
+          {BMIValue && (
+            <>
+              <h5 className="mt-4">Your BMI is: {BMIValue}</h5>
+              <div
+                className={`alert alert-${alertColor} font-monospace p-2`}
+                style={{ fontVariant: "normal" }}
+              >
+                {alertText}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
